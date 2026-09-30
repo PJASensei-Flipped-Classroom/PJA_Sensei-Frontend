@@ -8,7 +8,7 @@ import { Sidebar } from './components/Sidebar';
 import { LessonContent } from './components/LessonContent';
 import { AIChat } from './components/AIChat';
 import { courses } from './data/courses';
-import { Monitor, Smartphone } from 'lucide-react';
+import { Monitor, Smartphone, Send } from 'lucide-react';
 
 type ViewMode = 'home' | 'courses' | 'course' | 'exercises' | 'instructor';
 type AppMode = 'web' | 'plugin';
@@ -50,6 +50,11 @@ export default function App() {
     setIsChatOpen(false);
   };
 
+  // TEST: wysyła wiadomość do wtyczki (przez okno nadrzędne)
+  const sendTestToPlugin = () => {
+    window.parent.postMessage({ type: 'test', text: 'Hej z Reacta!' }, '*');
+  };
+
   const ModeToggle = () => (
     <div className="fixed top-4 right-4 z-50 flex gap-1 bg-card border border-border rounded-md p-1 shadow-lg">
       <button
@@ -65,6 +70,13 @@ export default function App() {
         title="Plugin mode"
       >
         <Smartphone size={16} />
+      </button>
+      <button
+        onClick={sendTestToPlugin}
+        className="p-2 rounded transition-colors hover:bg-accent"
+        title="Wyślij test do wtyczki"
+      >
+        <Send size={16} />
       </button>
     </div>
   );
