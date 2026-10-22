@@ -1,6 +1,7 @@
 const cognitoDomain = import.meta.env.VITE_COGNITO_DOMAIN;
 const clientId = import.meta.env.VITE_COGNITO_CLIENT_ID;
 const configuredRedirectUri = import.meta.env.VITE_COGNITO_REDIRECT_URI;
+const configuredLogoutUri = import.meta.env.VITE_COGNITO_LOGOUT_URI;
 
 function toBase64Url(bytes: Uint8Array): string {
   let binary = '';
@@ -40,6 +41,27 @@ export async function getCognitoLoginUrl(): Promise<string | null> {
   });
 
   return `${domain}/oauth2/authorize?${params.toString()}`;
+}
+
+export function getCognitoLogoutUrl(): string | null {
+  if (!cognitoDomain || !clientId) {
+    return null;
+  }
+
+  sessionStorage.removeItem('cognito_test_state');
+  sessionStorage.removeItem('cognito_test_verifier');
+
+  const logoutUri = configuredLogoutUri;
+  if (!logoutUri) {
+    return null;
+  }
+  const domain = cognitoDomain.replace(/\/+$/, '');
+  const params = new URLSearchParams({
+    client_id: clientId,
+    logout_uri: logoutUri,
+  });
+
+  return `${domain}/logout?${params.toString()}`;
 }
 
 export async function readCognitoCallback(): Promise<{ tokenType: 'access_token'; token: string } | null> {

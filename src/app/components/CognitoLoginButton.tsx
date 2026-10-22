@@ -1,5 +1,10 @@
 import { useEffect, useState } from 'react';
-import { getCognitoLoginUrl, readCognitoCallback, readCognitoError } from '../auth/cognito';
+import {
+  getCognitoLoginUrl,
+  getCognitoLogoutUrl,
+  readCognitoCallback,
+  readCognitoError,
+} from '../auth/cognito';
 
 export function CognitoLoginButton() {
   const [token, setToken] = useState<string | null>(null);
@@ -41,6 +46,19 @@ export function CognitoLoginButton() {
     window.location.assign(loginUrl);
   };
 
+  const handleLogout = () => {
+    const logoutUrl = getCognitoLogoutUrl();
+    if (!logoutUrl) {
+      window.alert(
+        'Brak konfiguracji Cognito. Ustaw VITE_COGNITO_DOMAIN i VITE_COGNITO_CLIENT_ID.'
+      );
+      return;
+    }
+
+    setToken(null);
+    window.location.assign(logoutUrl);
+  };
+
   return (
     <>
       <button
@@ -54,12 +72,20 @@ export function CognitoLoginButton() {
           <div className="w-full max-w-2xl rounded-lg border border-border bg-background p-5 shadow-xl">
             <div className="mb-3 flex items-center justify-between gap-4">
               <h2 className="font-semibold">Token testowy Cognito</h2>
-              <button
-                onClick={() => setToken(null)}
-                className="text-sm text-muted-foreground hover:text-foreground"
-              >
-                Zamknij
-              </button>
+              <div className="flex items-center gap-3">
+                <button
+                  onClick={handleLogout}
+                  className="text-sm text-destructive hover:underline"
+                >
+                  Wyloguj
+                </button>
+                <button
+                  onClick={() => setToken(null)}
+                  className="text-sm text-muted-foreground hover:text-foreground"
+                >
+                  Zamknij
+                </button>
+              </div>
             </div>
             <textarea
               readOnly
