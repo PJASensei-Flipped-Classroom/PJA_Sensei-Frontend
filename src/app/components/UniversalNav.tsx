@@ -1,5 +1,6 @@
 import { BookOpen, User, Bell, ArrowLeft } from 'lucide-react';
 import { ReactNode } from 'react';
+import { CognitoLoginButton } from './CognitoLoginButton';
 
 interface UniversalNavProps {
   title?: string;
@@ -96,9 +97,7 @@ export function UniversalNav({
                 >
                   O nas
                 </a>
-                <button className="px-4 py-2 rounded-md border border-border hover:bg-accent transition-colors text-sm hidden sm:block">
-                  Zaloguj się
-                </button>
+                <CognitoLoginButton />
                 <div className="h-6 w-px bg-border hidden sm:block" />
               </>
             )}
